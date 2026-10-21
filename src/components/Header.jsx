@@ -1,6 +1,7 @@
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 
-import { LogoIcon } from "./icons.jsx";
+import { LogoIcon, SunIcon } from "./icons.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 /**
  * Навбар із макета: логотип ліворуч, посилання праворуч.
@@ -19,6 +20,9 @@ export default function Header() {
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
   const currentTab = searchParams.get("tab");
+
+  // Тема приходить із контексту: ні App, ні сторінки її не передають.
+  const { theme, toggleTheme } = useTheme();
 
   function linkClass(tabId) {
     const isActive = pathname === "/" && currentTab === tabId;
@@ -55,6 +59,22 @@ export default function Header() {
           >
             Серіали
           </Link>
+
+          {/*
+            Підпис кнопки не змінюється, змінюється aria-pressed: читалка
+            скаже «Світла тема, натиснуто» або «не натиснуто». Підпис, що
+            сам себе перемикає, плутає: незрозуміло, стан це чи дія.
+          */}
+          <button
+            type="button"
+            className="header__theme"
+            aria-pressed={theme === "light"}
+            onClick={toggleTheme}
+          >
+            <SunIcon />
+            {/* Іконку бачить око, а підпис чує читалка. */}
+            <span className="visually-hidden">Світла тема</span>
+          </button>
         </nav>
       </div>
     </header>

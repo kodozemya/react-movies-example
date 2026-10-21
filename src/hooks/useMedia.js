@@ -1,5 +1,5 @@
 import { useTmdb } from "./useTmdb.js";
-import { findTab, normalizeMedia, onlyTitles } from "../lib/media.js";
+import { findTab, normalizeMedia, onlyTitles, MIN_QUERY_LENGTH } from "../lib/media.js";
 
 /**
  * Список для головної сторінки.
@@ -12,7 +12,11 @@ import { findTab, normalizeMedia, onlyTitles } from "../lib/media.js";
  * @param {string} query пошуковий запит ("" = показати вкладку)
  */
 export function useMediaList(tabId, query) {
-  const trimmed = query.trim();
+  /*
+    Запит, коротший за MIN_QUERY_LENGTH, рахуємо порожнім: одна літера
+    показує вкладку, а не тисячу випадкових збігів.
+  */
+  const trimmed = query.trim().length >= MIN_QUERY_LENGTH ? query.trim() : "";
   const tab = findTab(tabId);
 
   /*
